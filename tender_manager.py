@@ -10,9 +10,11 @@ warnings.filterwarnings('ignore')
 def get_tender_data(log_file, iqs_file):
     with open(log_file) as file:
         data = file.readlines()
+
         for d in data:
             if iqs_file in d:
                 return_list = [i.replace('[', '').replace(']', '').replace('\n', '') for i in d.split(',')]
+
                 return return_list
 
 
@@ -25,12 +27,14 @@ def get_excel_column(number):
     if (number > 25) & (number < 702):
         one = int(np.floor(number / 26) - 1)
         two = int(number % 26)
+
         return a_b_c_list[one] + a_b_c_list[two]
 
     elif number >= 702:
         one = int(np.floor(number / 702) - 1)
         two = int(np.floor((number - 702 - (one * 702)) / 26))
         three = int(number % 26)
+
         return a_b_c_list[one] + a_b_c_list[two] + a_b_c_list[three]
 
     else:
@@ -48,7 +52,7 @@ def to_tender_format(tender_file='', tender_sheet_name='', row_number=0, samskip
 
     df_sam = pd.read_excel(samskip_file, sheet_name='IQS', skiprows=1)
     df_sam.columns = [i.lower().strip().replace("'", '').replace('\n', '').replace('€', 'eur').replace('°c', 'celsius')
-                          .replace('[', '').replace(']', '') for i in df_sam.columns]
+                      .replace('[', '').replace(']', '') for i in df_sam.columns]
     part1 = df_sam.loc[:, 'transit time':'total current margin round 1']
     part2 = df_sam.loc[:, 'round 1: rank':'feedback']
     df_sam = pd.concat([part1.iloc[:, 1:], part2], 1)
@@ -58,42 +62,52 @@ def to_tender_format(tender_file='', tender_sheet_name='', row_number=0, samskip
     df_cus.columns = [i.lower().strip().replace("'", '').replace('\n', '').replace('€', 'eur').replace('°c', 'celsius')
                       .replace('[', '').replace(']', '') for i in df_cus.columns]
     cus_headers = list(df_cus.columns)
+
     del df_cus
 
     df_config = pd.read_csv(config_file)
     config_dic = dict(zip(list(df_config['Original']), list(df_config['Samskip'])))
 
     match_dic = {}
+
     for col in cus_headers:
         if col in sam_headers:
             match_dic[col] = col
+
         else:
             try:
                 match_dic[col] = config_dic[col]
+
             except KeyError:
                 pass
 
     for col_cus in match_dic:
         print(col_cus)
+
         try:
             col_sam = match_dic[col_cus]
+
         except KeyError:
             col_sam = col_cus
         sam_data = df_sam[col_sam]
 
         if (col_sam == 'payload (in ton)') & (payload_unit == 'kg'):
             sam_data = [i / 1000 for i in sam_data]
+
             print('Payload changed from kg')
 
         if col_sam == 'transit time':
             transit_df = pd.read_excel(transit_time_file, sheet_name=transit_time_unit)
             transit_dic = dict(zip(list(transit_df['Samskip']), list(transit_df['Original'])))
             new_data = []
+
             for d in sam_data:
                 try:
                     new_data.append(transit_dic[d])
+
                 except KeyError:
                     new_data.append(np.nan)
+
             print('transit time notation changed')
 
         cell_letter = get_excel_column([i for i, x in enumerate(cus_headers) if x == col_cus][0])
@@ -106,14 +120,17 @@ def to_tender_format(tender_file='', tender_sheet_name='', row_number=0, samskip
                         (list(df_sam[col_sam])[x] is None) or \
                         (list(df_sam[col_sam])[x] == 'nan'):
                     continue
+
                 elif list(df_sam[col_sam])[x] != '(Select a value)':
                     sht1.range(cell).value = list(df_sam[col_sam])[x]
+
             except Exception as e:
                 pass
 
     wb.save()
     wb.close()
     app.kill()
+
     print('Ended Successfully')
 
 
@@ -124,6 +141,7 @@ def taf_to_blob_format(samskip_file=''):
     df_iqs = pd.read_excel(samskip_file, sheet_name='IQS', skiprows=1)
 
     df_iqs.columns = [i.strip() for i in df_iqs.columns]
+
     df_iqs = df_iqs[['Customer Lane ID', 'Pricing',
                      'Department', 'Lane', 'No', 'Origin Country', 'Origin City',
                      'Origin Zip Code', 'Destination Country', 'Destination City',

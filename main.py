@@ -3,18 +3,12 @@ import shutil
 from pathlib import Path
 import sys
 
-import pandas as pd
-import json
-
 import blob_manager
 import tender_manager
 import table_manager
 
 # folder location of processed IQS
 processed_folder = r'\\legros\Data\admin\leo121\reverse_processed'
-
-# pre-defined name for the blob to store tender data
-blob_name_iqs = 'iqs_data.parquet'
 
 # variables to get from MS powershell
 iqs_path = sys.argv[1]

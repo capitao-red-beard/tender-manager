@@ -1,8 +1,6 @@
 from azure.cosmosdb.table.tableservice import TableService
 from azure.cosmosdb.table.tablebatch import TableBatch
 
-import pandas as pd
-
 import key_manager
 
 table_service = TableService(account_name='samsmdpblobdev02',
@@ -68,8 +66,3 @@ def delete_table(table_name):
 
 def delete_entity(partition_key, row_key, table_name='tender'):
     table_service.delete_entity(table_name, partition_key, row_key)
-
-
-local_file = r'C:\Users\AV10\PycharmProjects\tender\iqs_data.parquet'
-data_frame = pd.read_parquet(local_file)
-insert_batch_entity(data_frame)
