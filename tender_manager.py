@@ -6,7 +6,7 @@ import warnings
 
 warnings.filterwarnings('ignore')
 
-#hoi
+
 def get_tender_data(log_file, iqs_file):
     with open(log_file) as file:
         data = file.readlines()
