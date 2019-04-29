@@ -24,7 +24,7 @@ def get_excel_column(number):
     a_b_c_list = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
                   'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
-    if (number > 25) & (number < 702):
+    if 25 <= number <= 702:
         one = int(np.floor(number / 26) - 1)
         two = int(number % 26)
 
@@ -47,12 +47,13 @@ def to_tender_format(tender_file='', tender_sheet_name='', row_number=0, samskip
 
     app = xw.App()
     wb = app.books.open(tender_file)
+
     sht1 = wb.sheets[tender_sheet_name]
     sht1.select()
 
     df_sam = pd.read_excel(samskip_file, sheet_name='IQS', skiprows=1)
     df_sam.columns = [i.lower().strip().replace("'", '').replace('\n', '').replace('€', 'eur').replace('°c', 'celsius')
-                      .replace('[', '').replace(']', '') for i in df_sam.columns]
+                          .replace('[', '').replace(']', '') for i in df_sam.columns]
     part1 = df_sam.loc[:, 'transit time':'total current margin round 1']
     part2 = df_sam.loc[:, 'round 1: rank':'feedback']
     df_sam = pd.concat([part1.iloc[:, 1:], part2], 1)
@@ -60,7 +61,7 @@ def to_tender_format(tender_file='', tender_sheet_name='', row_number=0, samskip
 
     df_cus = pd.read_excel(tender_file, sheet_name=tender_sheet_name, skiprows=int(row_number) - 1)
     df_cus.columns = [i.lower().strip().replace("'", '').replace('\n', '').replace('€', 'eur').replace('°c', 'celsius')
-                      .replace('[', '').replace(']', '') for i in df_cus.columns]
+                          .replace('[', '').replace(']', '') for i in df_cus.columns]
     cus_headers = list(df_cus.columns)
 
     del df_cus
@@ -89,14 +90,15 @@ def to_tender_format(tender_file='', tender_sheet_name='', row_number=0, samskip
 
         except KeyError:
             col_sam = col_cus
+
         sam_data = df_sam[col_sam]
 
-        if (col_sam == 'payload (in ton)') & (payload_unit == 'kg'):
+        if (col_sam is 'payload (in ton)') and (payload_unit is 'kg'):
             sam_data = [i / 1000 for i in sam_data]
 
             print('Payload changed from kg')
 
-        if col_sam == 'transit time':
+        if col_sam is 'transit time':
             transit_df = pd.read_excel(transit_time_file, sheet_name=transit_time_unit)
             transit_dic = dict(zip(list(transit_df['Samskip']), list(transit_df['Original'])))
             new_data = []
@@ -110,18 +112,18 @@ def to_tender_format(tender_file='', tender_sheet_name='', row_number=0, samskip
 
             print('transit time notation changed')
 
-        cell_letter = get_excel_column([i for i, x in enumerate(cus_headers) if x == col_cus][0])
+        cell_letter = get_excel_column([i for i, x in enumerate(cus_headers) if x is col_cus][0])
         cell_list = [cell_letter + str(num) for num in range(int(row_number) + 1, int(row_number) + len(df_sam))]
 
         for x, cell in enumerate(cell_list):
             try:
-                if (sht1.range(cell).value == list(df_sam[col_sam])[x]) or \
+                if (sht1.range(cell).value is list(df_sam[col_sam])[x]) or \
                         (np.isnan(list(df_sam[col_sam])[x]) is True) or \
                         (list(df_sam[col_sam])[x] is None) or \
-                        (list(df_sam[col_sam])[x] == 'nan'):
+                        (list(df_sam[col_sam])[x] is 'nan'):
                     continue
 
-                elif list(df_sam[col_sam])[x] != '(Select a value)':
+                elif list(df_sam[col_sam])[x] is not '(Select a value)':
                     sht1.range(cell).value = list(df_sam[col_sam])[x]
 
             except Exception as e:

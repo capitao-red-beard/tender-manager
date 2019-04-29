@@ -30,7 +30,6 @@ df = tender_manager.to_tender_format(parameters[0], parameters[2], parameters[3]
                                      str(transit_mapping_file), str(config_file), parameters[5], parameters[4])
 
 # update the table with the data from IQS sheet
-# blob_manager.update_blob_from_path(blob_name_iqs, tender_manager.taf_to_blob_format(parameters[1]))
 table_manager.insert_batch_entity(tender_manager.taf_to_blob_format(parameters[1]))
 
 # finally write the unmodified taf to the blob
