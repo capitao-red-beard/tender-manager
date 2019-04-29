@@ -1,11 +1,22 @@
+# Built-in/Generic Imports
 import os
 import shutil
 from pathlib import Path
 import sys
 
+# Own modules
 import blob_manager
 import tender_manager
 import table_manager
+
+__author__ = '{Adriaan van der Valk}, {Jason van Pelt}'
+__copyright__ = 'Copyright {2019}, {project_name}'
+__credits__ = ['{Chris van Veelen}']
+__license__ = '{MIT}'
+__version__ = '{1}.{0}.{0}'
+__maintainer__ = '{Adriaan van der Valk}, {Jason van Pelt}'
+__email__ = '{adrioaan.van.der.valk@samskip.com}, {jason.van.pelt@samskip.com}'
+__status__ = '{in development}'
 
 # folder location of processed IQS
 processed_folder = r'\\legros\Data\admin\leo121\reverse_processed'
