@@ -79,8 +79,7 @@ def taf_to_blob_format(samskip_file=''):
     return df_iqs
 
 
-def to_tender_format(tender_file='', tender_sheet_name='', row_number=0, samskip_file='', transit_time_file='',
-                     config_file='', payload_unit='tonnes', transit_time_unit='days'):
+def to_tender_format(tender_file='', tender_sheet_name='', row_number=0, samskip_file='', transit_time_file='', config_file='', payload_unit='tonnes', transit_time_unit='days'):
     # function to transform IQS sheet to customer sheet
 
     app = xw.App()
@@ -157,16 +156,19 @@ def to_tender_format(tender_file='', tender_sheet_name='', row_number=0, samskip
             # print(cell)
             # print(sht1.range(cell).value)
             # print(list(df_sam[col_sam])[x])
+            # print(str(sht1.range(cell).value) == str(list(df_sam[col_sam])[x]))
             # print(pd.isnull(list(df_sam[col_sam])[x]))
             try:
-                if (sht1.range(cell).value == list(df_sam[col_sam])[x]) or \
+                if (str(sht1.range(cell).value) == str(list(df_sam[col_sam])[x])) or \
+                    (sht1.range(cell).value == list(df_sam[col_sam])[x]) or \
                         (pd.isnull(list(df_sam[col_sam])[x]) == True) or \
                         (list(df_sam[col_sam])[x] == None) or \
                         (list(df_sam[col_sam])[x] == 'nan'):
+                    # print('if')
                     continue
 
                 elif list(df_sam[col_sam])[x] != '(Select a value)':
-                    # print('elif',list(df_sam[col_sam])[x])
+                    print('data filled in: ',list(df_sam[col_sam])[x])
                     sht1.range(cell).value = list(df_sam[col_sam])[x]
 
             except Exception as e:
