@@ -40,6 +40,7 @@ def get_excel_column(number):
     else:
         return a_b_c_list[number]
 
+
 def taf_to_blob_format(samskip_file=''):
     # function to prepare the taf file for the database input
 
