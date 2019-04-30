@@ -6,7 +6,7 @@ import warnings
 
 warnings.filterwarnings('ignore')
 
-#hoi
+
 def get_tender_data(log_file, iqs_file):
     with open(log_file) as file:
         data = file.readlines()
@@ -39,6 +39,7 @@ def get_excel_column(number):
 
     else:
         return a_b_c_list[number]
+
 
 def taf_to_blob_format(samskip_file=''):
     # function to prepare the taf file for the database input
@@ -79,7 +80,8 @@ def taf_to_blob_format(samskip_file=''):
     return df_iqs
 
 
-def to_tender_format(tender_file='', tender_sheet_name='', row_number=0, samskip_file='', transit_time_file='', config_file='', payload_unit='tonnes', transit_time_unit='days'):
+def to_tender_format(tender_file='', tender_sheet_name='', row_number=0, samskip_file='', transit_time_file='',
+                     config_file='', payload_unit='tonnes', transit_time_unit='days'):
     # function to transform IQS sheet to customer sheet
 
     app = xw.App()
@@ -160,7 +162,7 @@ def to_tender_format(tender_file='', tender_sheet_name='', row_number=0, samskip
             # print(pd.isnull(list(df_sam[col_sam])[x]))
             try:
                 if (str(sht1.range(cell).value) == str(list(df_sam[col_sam])[x])) or \
-                    (sht1.range(cell).value == list(df_sam[col_sam])[x]) or \
+                        (sht1.range(cell).value == list(df_sam[col_sam])[x]) or \
                         (pd.isnull(list(df_sam[col_sam])[x]) == True) or \
                         (list(df_sam[col_sam])[x] == None) or \
                         (list(df_sam[col_sam])[x] == 'nan'):
@@ -168,13 +170,13 @@ def to_tender_format(tender_file='', tender_sheet_name='', row_number=0, samskip
                     continue
 
                 elif list(df_sam[col_sam])[x] != '(Select a value)':
-                    print('data filled in: ',list(df_sam[col_sam])[x])
+                    print('data filled in: ', list(df_sam[col_sam])[x])
                     sht1.range(cell).value = list(df_sam[col_sam])[x]
 
             except Exception as e:
                 # print(list(df_sam[col_sam])[x])
-                # print(e)
-                pass
+                print(e)
+                # pass
 
     wb.save()
     wb.close()
