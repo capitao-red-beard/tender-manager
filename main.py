@@ -5,9 +5,8 @@ from pathlib import Path
 import sys
 
 # Own modules
-import blob_manager
-import tender_manager
-import table_manager
+from azure_connectors import blob_manager, table_manager
+from excel_handlers import tender_manager
 
 __author__ = '{Adriaan van der Valk}, {Jason van Pelt}'
 __copyright__ = 'Copyright {2019}, {project_name}'

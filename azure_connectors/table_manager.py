@@ -1,7 +1,7 @@
-from azure.cosmosdb.table.tableservice import TableService
-from azure.cosmosdb.table.tablebatch import TableBatch
+from azure_connectors.cosmosdb.table.tableservice import TableService
+from azure_connectors.cosmosdb.table.tablebatch import TableBatch
 
-import key_manager
+from utilities import key_manager
 
 table_service = TableService(account_name='samsmdpblobdev02',
                              account_key=key_manager.get_password('azure', 'samsmdpblobdev02'))
