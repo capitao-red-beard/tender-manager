@@ -36,12 +36,10 @@ def insert_batch_entity(df, table_name='tender'):
         d['RowKey'] = str(base + i)
 
         batch.insert_entity(d)
-        print(f'Inserted - RowKey: {str(base + i)} - {d}')
 
         if i % 100 is 0 or i is len(data) + 1:
             table_service.commit_batch(table_name, batch)
             batch = TableBatch()
-            print('Committed Batch Successfully ' + '-' * 50)
 
 
 def get_max_entity_row(partition_key='iqs', table_name='tender'):
