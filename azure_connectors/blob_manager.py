@@ -1,6 +1,6 @@
 import os
 
-from azure_connectors.storage.blob import BlockBlobService
+from azure.storage.blob import BlockBlobService
 
 from utilities import key_manager
 

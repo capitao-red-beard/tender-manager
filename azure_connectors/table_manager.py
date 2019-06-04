@@ -1,5 +1,5 @@
-from azure_connectors.cosmosdb.table.tableservice import TableService
-from azure_connectors.cosmosdb.table.tablebatch import TableBatch
+from azure.cosmosdb.table.tableservice import TableService
+from azure.cosmosdb.table.tablebatch import TableBatch
 
 from utilities import key_manager
 
