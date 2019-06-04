@@ -68,7 +68,7 @@ def find_missing_columns(file, sheet, start_row=0, columns_needed=[],payload_typ
     original = original.rename(columns=column_config_dictionary)
 
     missing_columns = [i for i in columns_needed if i not in list(original.columns)]
-    if (len(missing_columns) > 0) or ((payload_notation == 'empty') & ('payload' in columns_needed)) or (( transit_time_notation == 'empty') & ('transit time' in columns_needed )):
+    if missing_columns or ((payload_notation == 'empty') & ('payload' in columns_needed)) or (( transit_time_notation == 'empty') & ('transit time' in columns_needed )):
         return True, missing_columns
     else:
         df = original[columns_needed]
@@ -88,4 +88,4 @@ def find_missing_columns(file, sheet, start_row=0, columns_needed=[],payload_typ
 
         return False
 
-find_missing_columns(file_name,sheet_name,row_number,data_columns,payload_notation,transit_time_notation)
+# find_missing_columns(file_name,sheet_name,row_number,data_columns,payload_notation,transit_time_notation)
