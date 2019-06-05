@@ -1,3 +1,5 @@
-l = br'\\lebrun\\Data\admin\\leo139\\config\\matched_columns.csv'
+import datetime
 
-print(l)
+year = datetime.datetime.now().year
+
+print(year)

@@ -6,6 +6,10 @@ warnings.filterwarnings("ignore")
 import numpy as np
 import numpy.core.multiarray as multiarray
 import pandas as pd
+
+import os
+import datetime
+
 from azure.cosmosdb.table.tableservice import TableService
 from azure.cosmosdb.table.tablebatch import TableBatch
 from azure.storage.blob import BlockBlobService
@@ -25,7 +29,7 @@ row_number = int(kryon_input[2]) - 1
 skip_list = kryon_input[3]
 payload_notation = str(kryon_input[4]).lower()
 transit_time_notation = str(kryon_input[5]).lower()
-customer = $company_name$
+customer = '$company_name$'
 
 data_columns = ['customer lane id',
                 'origin country',
@@ -48,10 +52,12 @@ data_columns = [i for i in data_columns if i not in skip_list]
 
 account_name = 'samsmdpblobdev02'
 container_name = 'raw'
+
 block_blob_service = BlockBlobService(account_name='samsmdpblobdev02',
                                       account_key='Dr3Qut1sQMqUdTFAZ8u4fKePFfoTgMETi4/RMURiT6wcyqCFC0m1l1bnYtDDXAaFBjs4IbcXY8Xt89dRYkNY6Q==')
+
 table_service = TableService(account_name='samsmdpblobdev02',
-                             account_key='Dr3Qut1sQMqUdTFAZ8u4fKePFfoTgMETi4/RMURiT6wcyqCFC0m1l1bnYtDDXAaFBjs4IbcXY8Xt89dRYkNY6Q=='))
+                             account_key='Dr3Qut1sQMqUdTFAZ8u4fKePFfoTgMETi4/RMURiT6wcyqCFC0m1l1bnYtDDXAaFBjs4IbcXY8Xt89dRYkNY6Q==')
 def create_table(table_name):
     table_service.create_table(table_name)
 
@@ -128,6 +134,13 @@ def read_to_dict(file, sheet, column_keys='Original', columns_items='Samskip'):
 
     return dictionary_to_return
 
+def generate_blob_name(original_file_name):
+    path, file = os.path.split(original_file_name)
+    year = datetime.datetime.now().year
+    month = datetime.datetime.now().month
+    day = datetime.datetime.now().day
+
+    return r'{}\{}\{}\{}\{}'.format(customer, year, month, day, file)
 
 def find_missing_columns(file, sheet, start_row=0, columns_needed=[], payload_type='', transit_type=''):
     column_config_dictionary = read_to_dict(matched_columns_location, 'matched_columns')
@@ -150,19 +163,20 @@ def find_missing_columns(file, sheet, start_row=0, columns_needed=[], payload_ty
     else:
         df = original[columns_needed]
 
-        if payload_type.isin(['tonnes']):
+        if payload_type == 'tonnes':
             try:
                 original['payload'] = [int(i) * 1000 for i in original['payload']]
             except ValueError:
                 print('Error in payload conversion')
                 return 'Error in payload conversion'
-
-        transit_df = pd.read_excel(transit_time_location, sheet_name=transit_type)
-        transit_dict = dict(zip(transit_df['Original'], transit_df['Samskip']))
-        df['transit time'].replace(transit_dict, inplace=True)
+        if transit_type != '':
+            transit_df = pd.read_excel(transit_time_location, sheet_name=transit_type)
+            transit_dict = dict(zip(transit_df['Original'], transit_df['Samskip']))
+            df['transit time'].replace(transit_dict, inplace=True)
         df['customer'] = customer
 
-        create_blob_from_path(customer +'/'+str(file.split(r'\\')[-1]), file)
+
+        create_blob_from_path(generate_blob_name(file), file)
         insert_batch_entity(df, table_name='tender')
 
         print(False)
