@@ -85,6 +85,7 @@ def find_missing_columns(file, sheet, start_row=0, columns_needed=[],payload_typ
 
         # insert in table
         # insert original in blob
+        # insert customer from input
 
         return False
 
