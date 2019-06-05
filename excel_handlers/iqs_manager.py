@@ -2,16 +2,19 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
+from azure.storage.blob import BlockBlobService
 import numpy as np
 import numpy.core.multiarray as multiarray
 import pandas as pd
 
-
-matched_columns_location = br'$MATCHED_COLUMNS_LOCATION$'
+matched_columns_location = '\\\\lebrun\\Data\\admin\\leo139\\config\\matched_columns.csv'
+# matched_columns_location = br'$MATCHED_COLUMNS_LOCATION$'
 
 # import format is file_name,sheet_name,row_number,skip_list,payload_notation,transit_time_natation
+# kryon_input = [1,'Freight & Service',12,[],'empty','empty']
 kryon_input = $parameters$
 
+# file_name = '//lebrun/Data/admin/leo139/to_be_processed/HEINEKEN_European International Transport Tender 2019-2020.xlsx'
 file_name = r'$excel_file_path$'
 sheet_name = str(kryon_input[1])
 row_number = int(kryon_input[2]) - 1
@@ -38,6 +41,13 @@ data_columns = ['customer lane id',
 
 data_columns = [i for i in data_columns if i not in skip_list]
 
+account_name = 'samsmdpblobdev02'
+container_name = 'raw'
+block_blob_service = BlockBlobService(account_name='samsmdpblobdev02',
+                                      account_key='Dr3Qut1sQMqUdTFAZ8u4fKePFfoTgMETi4/RMURiT6wcyqCFC0m1l1bnYtDDXAaFBjs4IbcXY8Xt89dRYkNY6Q==')
+
+def create_blob_from_path(blob_name, file_path):
+    block_blob_service.create_blob_from_path(container_name, blob_name, file_path)
 
 def read_to_dict(file, sheet, column_keys='Original', columns_items='Samskip'):
     if (file[-4:] == 'xlsx') | (file[-4:] == '.xls'):
@@ -45,7 +55,8 @@ def read_to_dict(file, sheet, column_keys='Original', columns_items='Samskip'):
     elif file[-4:] == '.csv':
         df = pd.read_csv(file)
     else:
-        return "Wrong file type"
+        print("Wrong file type")
+        return("Wrong file type")
 
     list_keys = [str(i).lower().strip().replace('\n', '') for i in df[column_keys]]
     list_items = [str(i).lower().strip().replace('\n', '') for i in df[columns_items]]
@@ -65,13 +76,13 @@ def find_missing_columns(file, sheet, start_row=0, columns_needed=[], payload_ty
     original.columns = [
         i.strip().replace("'", '').replace('\n', '').replace('€', 'eur').replace('°c', 'celsius').replace('[',
                                                                                                           '').replace(
-            ']', '') for i in original.columns]
+            ']', '') for i in original.columns.str.lower()]
     original.rename(columns=column_config_dictionary, inplace=True)
 
     missing_columns = [i for i in columns_needed if i not in list(original.columns)]
     if missing_columns or ((payload_notation == 'empty') & ('payload' in columns_needed)) or (
             (transit_time_notation == 'empty') & ('transit time' in columns_needed)):
-        return True, missing_columns
+        print(True, missing_columns)
     else:
         df = original[columns_needed]
 
@@ -89,6 +100,6 @@ def find_missing_columns(file, sheet, start_row=0, columns_needed=[], payload_ty
         # insert original in blob
         # insert customer from input
 
-        return False
+        print(False)
 
 find_missing_columns(file_name,sheet_name,row_number,data_columns,payload_notation,transit_time_notation)
