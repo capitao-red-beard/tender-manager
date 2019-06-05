@@ -23,7 +23,7 @@ processed_folder = r'\\legros\Data\admin\leo121\reverse_processed'
 # variables to get from MS powershell
 iqs_path = sys.argv[1]
 
-# get the iqs file name
+# get the iqs file name0
 iqs_file = blob_manager.split_path(iqs_path)[4]
 
 # files to get from leo folder
