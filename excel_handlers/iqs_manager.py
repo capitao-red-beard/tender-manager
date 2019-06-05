@@ -2,7 +2,7 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-from azure.storage.blob import BlockBlobService
+# from azure.storage.blob import BlockBlobService
 import numpy as np
 import numpy.core.multiarray as multiarray
 import pandas as pd
@@ -30,9 +30,9 @@ data_columns = ['customer lane id',
                 'destination city',
                 'destination postal code',
                 'requested equipment type',
-                'offered equipment type'
+                'offered equipment type',
                 'shipments per year',
-                'transit time',
+                'requested transit time',
                 'payload',
                 'currency',
                 'round 1 offered rate',
@@ -43,11 +43,11 @@ data_columns = [i for i in data_columns if i not in skip_list]
 
 account_name = 'samsmdpblobdev02'
 container_name = 'raw'
-block_blob_service = BlockBlobService(account_name='samsmdpblobdev02',
-                                      account_key='Dr3Qut1sQMqUdTFAZ8u4fKePFfoTgMETi4/RMURiT6wcyqCFC0m1l1bnYtDDXAaFBjs4IbcXY8Xt89dRYkNY6Q==')
+#block_blob_service = BlockBlobService(account_name='samsmdpblobdev02',
+                                      #account_key='Dr3Qut1sQMqUdTFAZ8u4fKePFfoTgMETi4/RMURiT6wcyqCFC0m1l1bnYtDDXAaFBjs4IbcXY8Xt89dRYkNY6Q==')
 
-def create_blob_from_path(blob_name, file_path):
-    block_blob_service.create_blob_from_path(container_name, blob_name, file_path)
+#def create_blob_from_path(blob_name, file_path):
+    #block_blob_service.create_blob_from_path(container_name, blob_name, file_path)
 
 def read_to_dict(file, sheet, column_keys='Original', columns_items='Samskip'):
     if (file[-4:] == 'xlsx') | (file[-4:] == '.xls'):
@@ -82,11 +82,11 @@ def find_missing_columns(file, sheet, start_row=0, columns_needed=[], payload_ty
     missing_columns = [i for i in columns_needed if i not in list(original.columns)]
     if missing_columns or ((payload_notation == 'empty') & ('payload' in columns_needed)) or (
             (transit_time_notation == 'empty') & ('transit time' in columns_needed)):
-        print(True, missing_columns)
+        print('True,', missing_columns)
     else:
         df = original[columns_needed]
 
-        if payload_type.isin(['kilos', 'kilo']):
+        if payload_type.isin(['tonnes']):
             try:
                 original['payload'] = [int(i) / 1000 for i in original['payload (in ton)']]
             except ValueError:
