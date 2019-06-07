@@ -46,7 +46,8 @@ data_columns = ['customer lane id',
                 'currency',
                 'round 1 offered rate',
                 'round 2 offered rate',
-                'round 3 offered rate']
+                'round 3 offered rate',
+                'round 4 offered rate']
 
 data_columns = [i for i in data_columns if i not in skip_list]
 
@@ -145,6 +146,7 @@ def generate_blob_name(original_file_name):
 def find_missing_columns(file, sheet, start_row=0, columns_needed=[], payload_type='', transit_type=''):
     column_config_dictionary = read_to_dict(matched_columns_location, 'matched_columns')
 
+
     try:
         original = pd.read_excel(file, sheet_name=sheet, skiprows=start_row, dtype=str, engine='xlrd')
     except FileNotFoundError:
@@ -178,6 +180,12 @@ def find_missing_columns(file, sheet, start_row=0, columns_needed=[], payload_ty
 
         create_blob_from_path(generate_blob_name(file), file)
         insert_batch_entity(df, table_name='tender')
+
+        #removing columns which don't need to be mapped
+        mc = pd.read_csv(matched_columns_location)
+        mc = mc[(~mc['Samskip'].isin(['requested transit time','payload','round 1 offered rate',
+                                      'round 2 offered rate','round 3 offered rate','round 4 offered rate'])) & (mc['Original']!= '')]
+        mc.to_csv(matched_columns_location,index=False)
 
         print(False)
 
