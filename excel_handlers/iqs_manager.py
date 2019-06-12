@@ -46,8 +46,7 @@ data_columns = ['customer lane id',
                 'currency',
                 'round 1 offered rate',
                 'round 2 offered rate',
-                'round 3 offered rate',
-                'round 4 offered rate']
+                'round 3 offered rate']
 
 data_columns = [i for i in data_columns if i not in skip_list]
 
@@ -184,7 +183,7 @@ def find_missing_columns(file, sheet, start_row=0, columns_needed=[], payload_ty
         #removing columns which don't need to be mapped
         mc = pd.read_csv(matched_columns_location)
         mc = mc[(~mc['Samskip'].isin(['requested transit time','payload','round 1 offered rate',
-                                      'round 2 offered rate','round 3 offered rate','round 4 offered rate'])) & (mc['Original']!= '')]
+                                      'round 2 offered rate','round 3 offered rate'])) & (mc['Original']!= '')]
         mc.to_csv(matched_columns_location,index=False)
 
         print(False)
