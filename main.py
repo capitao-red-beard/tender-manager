@@ -9,8 +9,8 @@ from azure_connectors import blob_manager, table_manager
 from excel_handlers import tender_manager
 
 __author__ = '{Adriaan van der Valk}, {Jason van Pelt}'
-__copyright__ = 'Copyright {2019}, {project_name}'
-__credits__ = ['{Chris van Veelen}']
+__copyright__ = 'Copyright {2019}, {tender_manager}'
+__credits__ = ['']
 __license__ = '{MIT}'
 __version__ = '{1}.{0}.{0}'
 __maintainer__ = '{Adriaan van der Valk}, {Jason van Pelt}'
